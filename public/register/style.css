@@ -1,11 +1,43 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
-
 body {
   background-color: #DEE2FC;
   color: #42445A;
-  font-family: "Poppins", sans-serif;
+  font-family: sans-serif;
 }
 
 label {
   font-weight: 500;
+}
+
+/* DEKSTOP FIRST */
+.container {
+  display: flex;
+  min-height: 90vh;
+  justify-content: center;
+  align-items: center;
+}
+.container form {
+  width: 50%;
+  border-radius: 7px;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.submit-button {
+  margin-top: 30px;
+}
+.action {
+  margin-top: 10px;
+  text-align: center;
+}
+.action a {
+  color: #7289DA;
+}
+
+@media (max-width: 767px) {
+  .container form {
+    border: none;
+    width: 90%!important;
+    padding: 0;
+    box-shadow: none;
+  }
 }

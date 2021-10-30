@@ -11,17 +11,24 @@
     <form autocomplete="off">
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" class="form-control" id="email">
+        <input type="email" placeholder="peace@gmail.com" class="form-control" id="email">
+      </div>
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" placeholder="username" class="form-control" id="username" />
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" class="form-control" id="password">
+        <input type="password" placeholder="•••••••" class="form-control" id="password">
       </div>
       <div class="form-group">
         <label for="confrimpass">Confrim Password</label>
-        <input type="password" class="form-control" id="confrimpass" />
+        <input type="password" placeholder="••••••••" class="form-control" id="confrimpass" />
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn submit-button btn-block btn-primary">Register</button>
+      <div class="action">
+        <a href="/login">Already have an account?</a>
+      </div>
     </form>
   </div>
 </body>

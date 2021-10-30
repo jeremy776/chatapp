@@ -42,4 +42,15 @@ server.use(bodyParser.json({
   limit: "5mb"
 }));
 
-server.listen(process.env.PORT || 3000);
+
+// Wihout routes
+server.get("/register", function(req, res) {
+  res.render("register.ejs", {
+    req,
+    res
+  });
+});
+
+server.listen(process.env.PORT || 3000, function() {
+  console.log("Server online!");
+});

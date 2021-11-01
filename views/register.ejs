@@ -10,32 +10,24 @@
   <div class="container">
     <form class="needs-validation new" autocomplete="off" method="POST">
       <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" placeholder="pucnity@gmail.com" class="is-invalid form-control" id="email" required />
-        <div class="invalid-feedback">
-          Email already exist
-        </div>
+        <label for="email" class="email-label">Email</label>
+        <input type="email" placeholder="pucnity@gmail.com" class="form-control" id="email" required />
+        <div class="ml-2 email-error invalid-feedback"></div>
       </div>
       <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" placeholder="username" class="is-invalid form-control" id="username" required />
-        <div class="invalid-feedback">
-          Username too short
-        </div>
+        <label for="username" class="username-label">Username</label>
+        <input type="text" placeholder="username" class="form-control" id="username" required />
+        <div class="ml-2 username-error invalid-feedback"></div>
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" placeholder="•••••••" class="is-invalid form-control" id="password" required />
-        <div class="invalid-feedback">
-          Password do not match
-        </div>
+        <label for="password" class="password-label">Password</label>
+        <input type="password" placeholder="•••••••" class="form-control" id="password" required />
+        <div class="ml-2 password-error invalid-feedback"></div>
       </div>
       <div class="form-group">
-        <label for="password2">Confrim Password</label>
-        <input type="password" placeholder="••••••••" class="is-invalid form-control" id="password2" required />
-        <div class="invalid-feedback">
-          Password do not match
-        </div>
+        <label for="password2" class="password2-label">Confrim Password</label>
+        <input type="password" placeholder="••••••••" class="form-control" id="password2" required />
+        <div class="ml-2 password2-error invalid-feedback"></div>
       </div>
       <button type="submit" class="btn submit-button btn-block btn-primary">Register</button>
       <div class="action">
@@ -44,7 +36,7 @@
     </form>
   </div>
 
-
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/eruda"></script>
   <script>
     eruda.init();

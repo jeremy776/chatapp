@@ -3,11 +3,9 @@ body {
   color: #42445A;
   font-family: sans-serif;
 }
-
 label {
   font-weight: 500;
 }
-
 /* DEKSTOP FIRST */
 .container {
   display: flex;

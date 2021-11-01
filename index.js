@@ -17,7 +17,6 @@ const parser = bodyParser.urlencoded({
 });
 require("dotenv").config();
 
-
 // server serup
 const ExpressSession = require("express-session")({
   secret: "#jbdisn:3+_8?$)').",
@@ -42,13 +41,16 @@ server.use(bodyParser.json({
   limit: "5mb"
 }));
 
-
 // Wihout routes
 server.get("/register", function(req, res) {
   res.render("register.ejs", {
     req,
     res
   });
+});
+
+server.post("/new-account", function(req, res) {
+  console.log(req.body);
 });
 
 server.listen(process.env.PORT || 3000, function() {

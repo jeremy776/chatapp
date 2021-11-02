@@ -8,6 +8,7 @@ const cookieParser = require("cookie-parser");
 const path = require("path");
 const csrf = require("csurf");
 const bcrypt = require("bcryptjs");
+const RD = require("reallydangerous");
 
 const Protection = csrf({
   cookie: true
@@ -18,7 +19,12 @@ const parser = bodyParser.urlencoded({
 });
 require("dotenv").config();
 
-//const UserManager = require("./models/User");
+const UserManager = require("./models/User");
+
+mongoose.connect(process.env.mongourl, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
 
 // server serup
 const ExpressSession = require("express-session")({
@@ -45,16 +51,16 @@ server.use(bodyParser.json({
 }));
 
 // Wihout routes
-server.get("/register", function(req, res) {
+server.get("/register", Protection, function(req, res) {
   res.render("register.ejs", {
     req,
-    res
+    res,
+    csrfToken: req.csrfToken()
   });
 });
 
-server.post("/new-account", function(req, res) {
+server.post("/new-account", Protection, function(req, res) {
   let user = req.body;
-
   /* Create userID */
   let date = new Date();
   let random = function (length) {
@@ -80,9 +86,42 @@ server.post("/new-account", function(req, res) {
   user.id = `${halfId}${random(6)}`;
 
   bcrypt.genSalt(15, (err, salt) => {
-    bcrypt.hash(user.password, salt, (err, hash) => {
+    bcrypt.hash(user.password, salt, async (err, hash) => {
       user.password = hash;
-      console.log(user);
+      /* Create user token */
+      let timestamp = Date.now();
+      let timestampEncode = RD.Base64.encode((""+timestamp));
+      let idEncode = RD.Base64.encode((""+user.id));
+      let passEncode = user.password.split("").slice(-15).join("");
+      user.token = `${idEncode}.${timestampEncode}.${passEncode}`;
+
+      let checkUser = await UserManager.findOne({
+        email: user.email
+      });
+      if (checkUser) {
+        return res.send({
+          status: 403, message: "User already exist"
+        });
+      }
+      UserManager.register(new UserManager({
+        email: user.email,
+        username: user.username,
+        id: user.id,
+        avatar: null,
+        token: user.token,
+        about: null,
+        friends: [],
+        status: "offline",
+        isBot: false,
+        isVerified: false,
+        last_online: Date.now(),
+        badge: []
+      }), user.password, async function(err, user) {
+        console.log("New account has been created");
+        return res.send({
+          status: 200, message: "Your account has been created"
+        });
+      });
     });
   });
 });

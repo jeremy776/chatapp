@@ -17,7 +17,12 @@ const UserSchema = new mongoose.Schema({
   about: String,
   friends: Array,
   status: String,
+  last_online: String,
+  isBot: Boolean,
+  isVerified: Boolean,
   badge: Array
+}, {
+  timestamps: true
 });
 
 const options = {
@@ -25,4 +30,4 @@ const options = {
 };
 
 UserSchema.plugin(passportMongo, options);
-modules.exports = mongoose.model("User", UserSchema);
+module.exports = mongoose.model("User", UserSchema);

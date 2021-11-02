@@ -29,7 +29,10 @@
         <input type="password" placeholder="••••••••" class="form-control" id="password2" required />
         <div class="ml-2 password2-error invalid-feedback"></div>
       </div>
-      <button type="submit" class="btn submit-button btn-block btn-primary">Register</button>
+      <input type="hidden" value="<%- csrfToken %>" id="_csrf" />
+      <button type="submit" class="btn submit-button btn-block btn-primary">
+        Register
+      </button>
       <div class="action">
         <a href="/login">Already have an account?</a>
       </div>

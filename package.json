@@ -8,10 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": [
-    "Brend",
-    "NinjaPeace"
-  ],
+  "author": "Pucnity_Team",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

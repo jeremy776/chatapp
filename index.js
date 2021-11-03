@@ -66,9 +66,9 @@ server.post("/new-account", Protection, function(req, res) {
   let random = function (length) {
     return Math.floor(Math.pow(10, length-1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length-1) - 1));
   };
-  let year = date.getFullYear();
-  let month = ("0" + (date.getMonth()+1)).slice(-2);
-  let day = ("0" + date.getDay()).slice(-2);
+  let year = date.getUTCFullYear();
+  let month = ("0" + (date.getUTCMonth()+1)).slice(-2);
+  let day = ("0" + date.getUTCDay()).slice(-2);
   let second = ("0" + date.toLocaleString('en-US', {
     second: "numeric",
     hour12: false
@@ -118,6 +118,7 @@ server.post("/new-account", Protection, function(req, res) {
         badge: []
       }), user.password, async function(err, user) {
         console.log("New account has been created");
+        console.log(user);
         return res.send({
           status: 200, message: "Your account has been created"
         });

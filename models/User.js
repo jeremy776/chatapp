@@ -20,6 +20,7 @@ const UserSchema = new mongoose.Schema({
   last_online: String,
   isBot: Boolean,
   isVerified: Boolean,
+  isDisabled: Boolean,
   badge: Array
 }, {
   timestamps: true

@@ -64,6 +64,34 @@ app.get("/register", Protection, function(req, res) {
   });
 });
 
+app.get("/login", Protection, function(req, res) {
+  res.render("login.ejs", {
+    req,
+    res,
+    csrfToken: req.csrfToken(),
+    config
+  });
+});
+
+app.get("/activate/:id", async function(req, res) {
+  let getId = await EmailActivate.findOne({
+    id: req.params.id
+  });
+  if (!getId) return res.sendStatus(404);
+
+  let getUser = await UserManager.findOne({
+    email: getId.email
+  });
+  getUser.isVerified = true;
+  getUser.save();
+
+  getId.remove({}, function(err) {
+    console.log(`${getId.email} has been verified`);
+  });
+  req.flash("message", "You can log into your account now");
+  return res.redirect("/login");
+});
+
 app.post("/new-account", Protection, async function(req, res) {
   let user = req.body;
   /* Create userID */
@@ -120,6 +148,7 @@ app.post("/new-account", Protection, async function(req, res) {
     friends: [],
     status: "offline",
     isBot: false,
+    isDisabled: false,
     isVerified: false,
     last_online: Date.now(),
     badge: []

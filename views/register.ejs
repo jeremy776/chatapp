@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Pucnity | Register</title>
+  <title><%- config.title %> | Register</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
   <link href="./style.css" rel="stylesheet" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,30 +11,34 @@
     <form class="needs-validation new" autocomplete="off" method="POST">
       <div class="form-group">
         <label for="email" class="email-label">Email</label>
-        <input type="email" placeholder="pucnity@gmail.com" class="form-control" id="email" required />
-        <div class="ml-2 email-error invalid-feedback"></div>
+        <input type="email" placeholder="pucnity@gmail.com" class="custom-form" id="email" required />
+        <div class="email-error invalid-feedback"></div>
       </div>
       <div class="form-group">
         <label for="username" class="username-label">Username</label>
-        <input type="text" placeholder="username" class="form-control" id="username" required />
-        <div class="ml-2 username-error invalid-feedback"></div>
+        <input type="text" placeholder="username" class="custom-form" id="username" required />
+        <div class="username-error invalid-feedback"></div>
+      </div>
+      <div class="form-group">
+        <label for="birthday">Birthday</label>
+        <input type="date" class="custom-form" id="birthday" name="birthday" required>
       </div>
       <div class="form-group">
         <label for="password" class="password-label">Password</label>
-        <input type="password" placeholder="•••••••" class="form-control" id="password" required />
-        <div class="ml-2 password-error invalid-feedback"></div>
+        <input type="password" placeholder="•••••••" class="custom-form" id="password" required />
+        <div class="password-error invalid-feedback"></div>
       </div>
-      <div class="form-group">
-        <label for="password2" class="password2-label">Confrim Password</label>
-        <input type="password" placeholder="••••••••" class="form-control" id="password2" required />
-        <div class="ml-2 password2-error invalid-feedback"></div>
-      </div>
+      <!--div class="form-group">
+                                                                                                                                                                                                                                                                                                        <label for="password2" class="password2-label">Confrim Password</label>
+                                                                                                                                                                                                                                                                                                        <input type="password" placeholder="••••••••" class="custom-form" id="password2" required />
+                                                                                                                                                                                                                                                                                                        <div class="ml-2 password2-error invalid-feedback"></div>
+                                                                                                                                                                                                                                                                                                      </div-->
       <input type="hidden" value="<%- csrfToken %>" id="_csrf" />
-      <button type="submit" class="btn submit-button btn-block btn-primary">
+      <button type="submit" class="submit-button">
         Register
       </button>
       <div class="action">
-        <a href="/login">Already have an account?</a>
+        Already have an account? <a href="/login">Login</a>
       </div>
     </form>
   </div>

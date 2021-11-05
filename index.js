@@ -1,5 +1,5 @@
 const express = require("express");
-const server = express();
+const app = express();
 const bodyParser = require("body-parser");
 const flash = require("connect-flash");
 const mongoose = require("mongoose");
@@ -9,6 +9,7 @@ const path = require("path");
 const csrf = require("csurf");
 const bcrypt = require("bcryptjs");
 const RD = require("reallydangerous");
+const config = require("./config.json");
 
 const Protection = csrf({
   cookie: true
@@ -26,40 +27,41 @@ mongoose.connect(process.env.mongourl, {
   useUnifiedTopology: true
 });
 
-// server serup
+// app setup
 const ExpressSession = require("express-session")({
   secret: "#jbdisn:3+_8?$)').",
   resave: false,
   saveUninitialized: false
 });
 
-server.set("views", path.join(__dirname, "views"));
-server.set("view engine", "ejs");
-server.use(express.static(path.join(__dirname, 'public')));
-server.use(flash());
-server.use(cookieParser());
-server.use(express.json());
-server.use(ExpressSession);
-server.use(passport.initialize());
-server.use(passport.session());
-server.use(express.urlencoded({
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(flash());
+app.use(cookieParser());
+app.use(express.json());
+app.use(ExpressSession);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(express.urlencoded({
   limit: "5mb",
   extended: true
 }));
-server.use(bodyParser.json({
+app.use(bodyParser.json({
   limit: "5mb"
 }));
 
 // Wihout routes
-server.get("/register", Protection, function(req, res) {
+app.get("/register", Protection, function(req, res) {
   res.render("register.ejs", {
     req,
     res,
-    csrfToken: req.csrfToken()
+    csrfToken: req.csrfToken(),
+    config
   });
 });
 
-server.post("/new-account", Protection, function(req, res) {
+app.post("/new-account", Protection, function(req, res) {
   let user = req.body;
   /* Create userID */
   let date = new Date();
@@ -126,6 +128,6 @@ server.post("/new-account", Protection, function(req, res) {
   });
 });
 
-server.listen(process.env.PORT || 3000, function() {
-  console.log("Server online!");
+app.listen(process.env.PORT || 3000, function() {
+  console.log("app online!");
 });

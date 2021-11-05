@@ -1,10 +1,14 @@
 body {
-  background-color: #DEE2FC;
+  background-color: white;
   color: #42445A;
+  user-select: none;
+  webkit-user-select: none;
   font-family: sans-serif;
 }
 label {
+  color: black;
   font-weight: 500;
+  font-size: 13px;
 }
 /* DEKSTOP FIRST */
 .container {
@@ -22,13 +26,47 @@ label {
 }
 .submit-button {
   margin-top: 35px;
+  width: 100%;
+  background-color: blue;
+  color: white;
+  outline: none;
+  font-size: 13px;
+  padding: 8px;
+  border: none;
+  font-weight: bold;
+  color: white;
+  transition: transform 0.5s ease;
+  border-radius: 6px;
+}
+.submit-button:active {
+  transform: scale(0.8);
 }
 .action {
-  margin-top: 10px;
+  margin-top: 15px;
+  font-weight: bold;
+  color: black;
+  font-size: 11px;
   text-align: center;
 }
 .action a {
-  color: #7289DA;
+  color: blue;
+}
+.custom-form {
+  background-color: white;
+  width: 100%;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  padding: 7px 5px 7px 12px;
+  outline: none;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}
+.custom-form.is-invalid,
+.custom-form.is-invalid:focus {
+  border: 2px solid red;
+}
+.custom-form:focus {
+  border: 2px solid blue;
 }
 
 @media (max-width: 767px) {

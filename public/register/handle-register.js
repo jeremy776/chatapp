@@ -4,7 +4,8 @@ document.querySelector(".new").addEventListener("submit", (e) => {
   let email = document.querySelector("#email");
   let username = document.querySelector("#username");
   let password = document.querySelector("#password");
-  let confrimpass = document.querySelector("#password2");
+  //let confrimpass = document.querySelector("#password2")
+  let birthday = document.getElementById("birthday");
 
   if (username.value.length < 3) {
     setTimeout(() => {
@@ -12,14 +13,30 @@ document.querySelector(".new").addEventListener("submit", (e) => {
     }, 1000);
     username.classList.add("is-invalid");
     document.querySelector(".username-label").classList.add("text-danger");
-    document.querySelector(".username-error").innerHTML = "Username too short";
+    document.querySelector(".username-error").innerHTML = "username is too short";
     return;
   } else if (username.classList.contains("is-invalid")) {
     username.classList.remove("is-invalid");
     document.querySelector(".username-label").classList.remove("text-danger");
     document.querySelector(".username-error").innerHTML = "";
   }
-  if (password.value !== confrimpass.value) {
+
+  console.log(parseInt(birthday.value.split("-")[0]) - new Date.getUTCFullYears());
+
+    if (password.value.length < 8) {
+      setTimeout(() => {
+        loadingButton(false);
+      }, 1000);
+      password.classList.add("is-invalid");
+      document.querySelector(`.${password.id}-label`).classList.add("text-danger");
+      document.querySelector(`.${password.id}-error`).innerHTML = "Minimum 8 characters for password";
+      return;
+    } else if (password.value.length >= 8) {
+      password.classList.remove("is-invalid");
+      document.querySelector(`.${password.id}-label`).classList.remove("text-danger");
+      document.querySelector(`.${password.id}-error`).innerHTML = "";
+    }
+    /*if (password.value !== confrimpass.value) {
     setTimeout(() => {
       loadingButton(false);
     }, 1000);
@@ -50,8 +67,9 @@ document.querySelector(".new").addEventListener("submit", (e) => {
         document.querySelector(x).innerHTML = "";
       });
   }
+*/
 
-  $.ajax({
+    /*$.ajax({
     url: "/new-account",
     method: "POST",
     data: {
@@ -66,20 +84,20 @@ document.querySelector(".new").addEventListener("submit", (e) => {
         alert(data.message);
       } else {
         loadingButton(false);
-        alert(data.message);
+        window.location.href = "/login";
+      }
+    }
+  });*/
+
+    function loadingButton(state) {
+      let button = document.querySelector(".submit-button");
+      if (state) {
+        button.setAttribute("disabled", true);
+        button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
+      }
+      if (!state) {
+        button.removeAttribute("disabled");
+        button.innerHTML = "Register";
       }
     }
   });
-
-  function loadingButton(state) {
-    let button = document.querySelector(".submit-button");
-    if (state) {
-      button.setAttribute("disabled", true);
-      button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
-    }
-    if (!state) {
-      button.removeAttribute("disabled");
-      button.innerHTML = "Register";
-    }
-  }
-});

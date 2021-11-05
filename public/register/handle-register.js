@@ -6,6 +6,7 @@ document.querySelector(".new").addEventListener("submit", (e) => {
   let password = document.querySelector("#password");
   //let confrimpass = document.querySelector("#password2")
   let birthday = document.getElementById("birthday");
+  let age = (new Date().getUTCFullYear()) - parseInt(birthday.value.split("-")[0]);
 
   if (username.value.length < 3) {
     setTimeout(() => {
@@ -21,22 +22,30 @@ document.querySelector(".new").addEventListener("submit", (e) => {
     document.querySelector(".username-error").innerHTML = "";
   }
 
-  console.log(parseInt(birthday.value.split("-")[0]) - new Date.getUTCFullYears());
+  if (age < 12) {
+    setTimeout(() => {
+      loadingButton(false);
+    }, 700);
+    birthday.classList.add("is-invalid");
+    document.querySelector(".birthday-label").classList.add("text-danger");
+    document.querySelector(".birthday-error").innerHTML = "you are too young to use this app";
+    return;
+  }
 
-    if (password.value.length < 8) {
-      setTimeout(() => {
-        loadingButton(false);
-      }, 1000);
-      password.classList.add("is-invalid");
-      document.querySelector(`.${password.id}-label`).classList.add("text-danger");
-      document.querySelector(`.${password.id}-error`).innerHTML = "Minimum 8 characters for password";
-      return;
-    } else if (password.value.length >= 8) {
-      password.classList.remove("is-invalid");
-      document.querySelector(`.${password.id}-label`).classList.remove("text-danger");
-      document.querySelector(`.${password.id}-error`).innerHTML = "";
-    }
-    /*if (password.value !== confrimpass.value) {
+  if (password.value.length < 8) {
+    setTimeout(() => {
+      loadingButton(false);
+    }, 1000);
+    password.classList.add("is-invalid");
+    document.querySelector(`.${password.id}-label`).classList.add("text-danger");
+    document.querySelector(`.${password.id}-error`).innerHTML = "Minimum 8 characters for password";
+    return;
+  } else if (password.value.length >= 8) {
+    password.classList.remove("is-invalid");
+    document.querySelector(`.${password.id}-label`).classList.remove("text-danger");
+    document.querySelector(`.${password.id}-error`).innerHTML = "";
+  }
+  /*if (password.value !== confrimpass.value) {
     setTimeout(() => {
       loadingButton(false);
     }, 1000);
@@ -69,7 +78,7 @@ document.querySelector(".new").addEventListener("submit", (e) => {
   }
 */
 
-    /*$.ajax({
+  /*$.ajax({
     url: "/new-account",
     method: "POST",
     data: {
@@ -89,15 +98,15 @@ document.querySelector(".new").addEventListener("submit", (e) => {
     }
   });*/
 
-    function loadingButton(state) {
-      let button = document.querySelector(".submit-button");
-      if (state) {
-        button.setAttribute("disabled", true);
-        button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
-      }
-      if (!state) {
-        button.removeAttribute("disabled");
-        button.innerHTML = "Register";
-      }
+  function loadingButton(state) {
+    let button = document.querySelector(".submit-button");
+    if (state) {
+      button.setAttribute("disabled", true);
+      button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
     }
-  });
+    if (!state) {
+      button.removeAttribute("disabled");
+      button.innerHTML = "Register";
+    }
+  }
+});

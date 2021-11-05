@@ -87,6 +87,11 @@ app.post("/new-account", Protection, function(req, res) {
   let halfId = `${year}${month}${day}${jam}`;
   user.id = `${halfId}${random(6)}`;
 
+  // set token for activation
+  let createToken = new RD.Signer(jam);
+  let tokenActivate = createToken.sign(user.username);
+
+  // Encode passsword
   bcrypt.genSalt(15, (err, salt) => {
     bcrypt.hash(user.password, salt, async (err, hash) => {
       user.password = hash;
@@ -105,6 +110,7 @@ app.post("/new-account", Protection, function(req, res) {
           status: 403, message: "User already exist"
         });
       }
+      // Create new User
       UserManager.register(new UserManager({
         email: user.email,
         username: user.username,

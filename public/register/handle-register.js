@@ -78,7 +78,7 @@ document.querySelector(".new").addEventListener("submit", (e) => {
   }
 */
 
-  /*$.ajax({
+  $.ajax({
     url: "/new-account",
     method: "POST",
     data: {
@@ -96,7 +96,7 @@ document.querySelector(".new").addEventListener("submit", (e) => {
         window.location.href = "/login";
       }
     }
-  });*/
+  });
 
   function loadingButton(state) {
     let button = document.querySelector(".submit-button");

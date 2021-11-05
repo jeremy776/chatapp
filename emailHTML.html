@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <style>
+    body {
+      font-family: sans-serif;
+      color: rgba(0, 0, 0, 0.8);
+    }
+    .brand {
+      color: blue;
+      text-size: 11px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    p {
+      font-size: 14px;
+    }
+    .end {
+      font-size: 15px;
+      font-weight: 600;
+      margin-top: 20px;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h3 class="header-text">Hi Jeremy,</h3>
+  <p>
+    You just created an account at <a href="${config.url}" class="brand">Punicty</a> using this email (${req.body.email}) and now you need to activate your account to be able to log into your account
+  </p>
+  <p>
+    please click the link below here to activate your account. We will delete your account after 24 hours if it is not activated.<br>
+    <a href="${fullLink}">${fullLink}</a>
+  </p>
+  <p>
+    if you feel you didn't create an account today at Punicty just ignore this email.<br>
+    <b>This is an auto email you don't need to reply</b>
+  </p>
+  <p class="end">
+    - Punicty Team
+  </p>
+</body>
+</html>

@@ -9,6 +9,8 @@ const activate = mongoose.Schema({
     unique: true,
     type: String
   }
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model("Activating", activate);

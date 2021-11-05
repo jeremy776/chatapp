@@ -6,10 +6,12 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+const nodemailer = require("nodemailer");
 const csrf = require("csurf");
 const bcrypt = require("bcryptjs");
 const RD = require("reallydangerous");
 const config = require("./config.json");
+const fs = require("fs");
 
 const Protection = csrf({
   cookie: true
@@ -21,6 +23,7 @@ const parser = bodyParser.urlencoded({
 require("dotenv").config();
 
 const UserManager = require("./models/User");
+const EmailActivate = require("./models/Activate");
 
 mongoose.connect(process.env.mongourl, {
   useNewUrlParser: true,
@@ -61,7 +64,7 @@ app.get("/register", Protection, function(req, res) {
   });
 });
 
-app.post("/new-account", Protection, function(req, res) {
+app.post("/new-account", Protection, async function(req, res) {
   let user = req.body;
   /* Create userID */
   let date = new Date();
@@ -91,45 +94,75 @@ app.post("/new-account", Protection, function(req, res) {
   let createToken = new RD.Signer(jam);
   let tokenActivate = createToken.sign(user.username);
 
-  // Encode passsword
-  bcrypt.genSalt(15, (err, salt) => {
-    bcrypt.hash(user.password, salt, async (err, hash) => {
-      user.password = hash;
-      /* Create user token */
-      let timestamp = Date.now();
-      let timestampEncode = RD.Base64.encode((""+timestamp));
-      let idEncode = RD.Base64.encode((""+user.id));
-      let passEncode = user.password.split("").slice(-15).join("");
-      user.token = `${idEncode}.${timestampEncode}.${passEncode}`;
+  /* Create user token */
+  let timestamp = Date.now();
+  let timestampEncode = RD.Base64.encode((""+timestamp));
+  let idEncode = RD.Base64.encode((""+user.id));
+  let passEncode = user.password.split("").slice(-15).join("");
+  user.token = `${idEncode}.${timestampEncode}.${passEncode}`;
 
-      let checkUser = await UserManager.findOne({
-        email: user.email
-      });
-      if (checkUser) {
+  let checkUser = await UserManager.findOne({
+    email: user.email
+  });
+  if (checkUser) {
+    return res.send({
+      status: 403, message: "User already exist"
+    });
+  }
+  // create user
+  UserManager.register(new UserManager({
+    email: user.email,
+    username: user.username,
+    id: user.id,
+    avatar: null,
+    token: user.token,
+    about: null,
+    friends: [],
+    status: "offline",
+    isBot: false,
+    isVerified: false,
+    last_online: Date.now(),
+    badge: []
+  }), user.password, async function(err, user) {
+    console.log(user);
+    // Set email id to user
+    const setToken = new EmailActivate({
+      email: req.body.email,
+      id: tokenActivate
+    });
+    await setToken.save().catch(err => {
+      console.log(err);
+    });
+
+    // Get user email id
+    const emailToken = await EmailActivate.findOne({
+      email: req.body.email
+    });
+    let fullLink = config.url + "/activate/" + emailToken.id;
+
+    // Send email verify to user email
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: config.account.email,
+        pass: process.env.password
+      }
+    });
+    // create options
+    const optionsEmail = {
+      from: config.account.email,
+      to: req.body.email,
+      subject: "New account created | Activate your account",
+      html: `<!DOCTYPE html><html lang="en"><head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta http-equiv="X-UA-Compatible" content="ie=edge"> <style> body { font-family: sans-serif; color: rgba(0, 0, 0, 0.8); } .brand { color: blue; text-size: 11px; text-decoration: none; font-weight: 500; } p { font-size: 14px; } .end { font-size: 15px; font-weight: 600; margin-top: 20px; text-decoration: underline; } </style></head><body> <h3 class="header-text">Hi Jeremy,</h3> <p> You just created an account at <a href="${config.url}" class="brand">Punicty</a> using this email (${req.body.email}) and now you need to activate your account to be able to log into your account </p> <p> please click the link below here to activate your account. We will delete your account after 24 hours if it is not activated.<br> <a href="${fullLink}">${fullLink}</a> </p> <p> if you feel you didn't create an account today at Punicty just ignore this email.<br> <b>This is an auto email you don't need to reply</b> </p> <p class="end"> - Punicty Team </p></body></html>`
+    };
+    transporter.sendMail(optionsEmail, (err, info) => {
+      if (err) {
         return res.send({
-          status: 403, message: "User already exist"
+          status: err.status, message: err.message
         });
       }
-      // Create new User
-      UserManager.register(new UserManager({
-        email: user.email,
-        username: user.username,
-        id: user.id,
-        avatar: null,
-        token: user.token,
-        about: null,
-        friends: [],
-        status: "offline",
-        isBot: false,
-        isVerified: false,
-        last_online: Date.now(),
-        badge: []
-      }), user.password, async function(err, user) {
-        console.log("New account has been created");
-        console.log(user);
-        return res.send({
-          status: 200, message: "Your account has been created"
-        });
+      return res.send({
+        status: 200, message: "Your account has been created"
       });
     });
   });

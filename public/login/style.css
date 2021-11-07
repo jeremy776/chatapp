@@ -118,14 +118,15 @@ label {
   margin-top: 15px;
 }
 
-.message-info-error {
+.message-info,
+.message-error {
   /*background-color: #7829DA;*/
   font-weight: 600;
   display: flex;
   /*margin-bottom: 25px;*/
 }
-.message-info-error p {
-
+.message-error p ,
+.message-info p {
   display: block;
   font-size: 12px;
   color: #004676;
@@ -134,6 +135,10 @@ label {
   background-color: #dee2fc;
   width: 100%;
   border-radius: 4px;
+}
+.message-error p {
+  background-color: red !important;
+  color: white !important;
 }
 
 @media screen and (min-width: 800px) {

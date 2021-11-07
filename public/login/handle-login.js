@@ -1,4 +1,4 @@
-document.querySelector(".login").addEventListener("submit", (e) => {
+/*document.querySelector(".login").addEventListener("submit", (e) => {
   e.preventDefault();
   loadingButton(true);
   $.ajax({
@@ -9,10 +9,14 @@ document.querySelector(".login").addEventListener("submit", (e) => {
       "password": document.querySelector(".password").value,
       "_csrf": document.querySelector("._csrf").value
     },
+    error: function(e) {
+      return console.log(e);
+    },
     success: function(data) {
       setTimeout(() => {
         loadingButton(false);
       }, 1000);
+      console.log(data.status);
       if (data.status !== 200) {
         if (data.detail.type == "form-error") {
           if (document.querySelector(".email").classList.contains("is-invalid") && data.detail.formId !== "email") {
@@ -28,7 +32,7 @@ document.querySelector(".login").addEventListener("submit", (e) => {
           document.querySelector(`.${data.detail.formId}-label`).classList.add("text-danger");
           document.querySelector(`.${data.detail.formId}-error`).innerHTML = data.message;
           return;
-        } else if (data.detail.type == "unverified") {
+        } else if (data.detail.type !== "form-error") {
           document.querySelector(".message").innerHTML = `<div class="message-info-error"><p>${data.message}</p></div>`;
           return;
         }
@@ -42,8 +46,6 @@ document.querySelector(".login").addEventListener("submit", (e) => {
 
 function loadingButton(state) {
   if (state) {
-    document.querySelector(".custom-button").setAttribute("disabled", true);
-    document.querySelector(".custom-button").innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Loading...';
     return;
   }
   if (!state) {
@@ -52,3 +54,13 @@ function loadingButton(state) {
     return;
   }
 }
+document.querySelector(".custom-button").addEventListener("click", (e) => {
+  localStorage.setItem("loginEmail", document.getElementById("email").value);
+});
+window.onload = () => {
+  let emailItem = localStorage.getItem("loginEmail");
+  if (emailItem) {
+    document.getElementById("email").value = emailItem;
+    return;
+  }
+};*/

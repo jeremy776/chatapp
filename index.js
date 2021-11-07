@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const passport = require("passport");
 const cookieParser = require("cookie-parser");
 const path = require("path");
+const localStrategy = require("passport-local");
 const nodemailer = require("nodemailer");
 const csrf = require("csurf");
 const bcrypt = require("bcryptjs");
@@ -53,9 +54,18 @@ app.use(express.urlencoded({
 app.use(bodyParser.json({
   limit: "5mb"
 }));
+app.use(ExpressSession);
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy({
+  usernameField: "email",
+  passwordField: "password"
+}, UserManager.authenticate()));
+passport.serializeUser(UserManager.serializeUser());
+passport.deserializeUser(UserManager.deserializeUser());
 
 // Wihout routes
-app.get("/register", Protection, function(req, res) {
+app.get("/register", Protection, notAuthenticated, function(req, res) {
   res.render("register.ejs", {
     req,
     res,
@@ -64,13 +74,14 @@ app.get("/register", Protection, function(req, res) {
   });
 });
 
-app.get("/login", Protection, function(req, res) {
+app.get("/login", Protection, notAuthenticated, function(req, res) {
   res.render("login.ejs", {
     req,
     res,
     csrfToken: req.csrfToken(),
     config,
-    info: req.flash("message")
+    info: req.flash("message"),
+    err: req.flash("error")
   });
 });
 
@@ -93,31 +104,24 @@ app.get("/activate/:id", async function(req, res) {
   return res.redirect("/login");
 });
 
-app.post("/login-account", Protection, async function(req, res) {
+app.post("/login/", Protection, async function(req, res, next) {
   let body = req.body;
   let user = await UserManager.findOne({
     email: body.email
   });
   if (!user) {
-    return res.send({
-      status: 404,
-      detail: {
-        type: "form-error",
-        formId: "email"
-      },
-      message: "Email could not be found",
-    });
+    req.flash("error", "Email could not be found");
+    return res.redirect("/login");
   }
   if (!user.isVerified) {
-    return res.send({
-      status: 403,
-      detail: {
-        type: "unverified"
-      },
-      message: "Unverified account detected, please check your email to verify. didn't see it? <a href='/verify-email'>Resend verification email</a>"
-    });
+    req.flash("message", "Unverified account detected, please check your email to verify. didn't see it? Resens verification email");
+    return res.redirect("/login");
   }
-  console.log(user);
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/login",
+    failureFlash: true
+  })(req, res, next);
 });
 
 app.post("/new-account", Protection, async function(req, res) {
@@ -234,10 +238,20 @@ app.post("/new-account", Protection, async function(req, res) {
   });
 });
 
+function notAuthenticated(req, res, next) {
+  if (!req.isAuthenticated()) return next();
+  return res.redirect("/");
+}
+function isAuthenticate(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  return res.redirect("/login");
+}
 
 app.use(function(err, req, res, next) {
   res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err: {};
 });
+
 app.listen(process.env.PORT || 3000, function() {
   console.log("app online!");
 });

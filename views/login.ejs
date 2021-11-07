@@ -14,11 +14,11 @@
         <h3 class="header-text">Login to your account</h3>
       </div>
       <div class="message">
-        <% if (info.length > 0) {
+        <% if (info.length > 0 || err.length > 0) {
           %>
-          <div class="message-info-error">
+          <div class="message-<%- info.length ? `info`: `error` %>">
             <p>
-              <%- info %>
+              <%- info.length ? info: err %>
             </p>
           </div>
           <%
@@ -31,7 +31,7 @@
       </div>
       <div class="form-group">
         <label class="password-label" for="password">Password</label>
-        <input type="hidden" class="_csrf" value="<%- csrfToken %>">
+        <input type="hidden" name="_csrf" class="_csrf" value="<%- csrfToken %>">
         <input type="password" placeholder="••••••••••" id="password" name="password" class="password custom-input" required>
         <div class="password-error invalid-feedback"></div>
       </div>
@@ -49,6 +49,7 @@
   <script src="//cdn.jsdelivr.net/npm/eruda"></script>
   <script>
     eruda.init();
+
   </script>
   <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
   <script src="./handle-login.js"></script>

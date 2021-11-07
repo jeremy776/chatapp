@@ -90,7 +90,12 @@ document.querySelector(".new").addEventListener("submit", (e) => {
     success: function(data) {
       if (data.status !== 200) {
         loadingButton(false);
-        alert(data.message);
+        if (data.id) {
+          document.getElementById(data.id).classList.add("is-invalid");
+          document.querySelector(`.${data.id}-label`).classList.add("text-danger");
+          document.querySelector(`.${data.id}-error`).innerHTML = data.message;
+          return;
+        }
       } else {
         loadingButton(false);
         window.location.href = "/login";

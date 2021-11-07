@@ -69,7 +69,8 @@ app.get("/login", Protection, function(req, res) {
     req,
     res,
     csrfToken: req.csrfToken(),
-    config
+    config,
+    info: req.flash("message")
   });
 });
 
@@ -90,6 +91,33 @@ app.get("/activate/:id", async function(req, res) {
   });
   req.flash("message", "You can log into your account now");
   return res.redirect("/login");
+});
+
+app.post("/login-account", Protection, async function(req, res) {
+  let body = req.body;
+  let user = await UserManager.findOne({
+    email: body.email
+  });
+  if (!user) {
+    return res.send({
+      status: 404,
+      detail: {
+        type: "form-error",
+        formId: "email"
+      },
+      message: "Email could not be found",
+    });
+  }
+  if (!user.isVerified) {
+    return res.send({
+      status: 403,
+      detail: {
+        type: "unverified"
+      },
+      message: "Unverified account detected, please check your email to verify. didn't see it? <a href='/verify-email'>Resend verification email</a>"
+    });
+  }
+  console.log(user);
 });
 
 app.post("/new-account", Protection, async function(req, res) {
@@ -122,81 +150,94 @@ app.post("/new-account", Protection, async function(req, res) {
   let createToken = new RD.Signer(jam);
   let tokenActivate = createToken.sign(user.username);
 
-  /* Create user token */
-  let timestamp = Date.now();
-  let timestampEncode = RD.Base64.encode((""+timestamp));
-  let idEncode = RD.Base64.encode((""+user.id));
-  let passEncode = user.password.split("").slice(-15).join("");
-  user.token = `${idEncode}.${timestampEncode}.${passEncode}`;
+  bcrypt.genSalt(15, function(err, salt) {
+    bcrypt.hash(user.password, salt, async function(err, hash) {
+      let hashedPassword = hash;
+      /* Create user token */
+      let timestamp = Date.now();
+      let timestampEncode = RD.Base64.encode((""+timestamp));
+      let idEncode = RD.Base64.encode((""+user.id));
+      let passEncode = hashedPassword.split("").slice(-15).join("");
+      user.token = `${idEncode}.${timestampEncode}.${passEncode}`;
 
-  let checkUser = await UserManager.findOne({
-    email: user.email
-  });
-  if (checkUser) {
-    return res.send({
-      status: 403, message: "User already exist"
-    });
-  }
-  // create user
-  UserManager.register(new UserManager({
-    email: user.email,
-    username: user.username,
-    id: user.id,
-    avatar: null,
-    token: user.token,
-    about: null,
-    friends: [],
-    status: "offline",
-    isBot: false,
-    isDisabled: false,
-    isVerified: false,
-    last_online: Date.now(),
-    badge: []
-  }), user.password, async function(err, user) {
-    console.log(user);
-    // Set email id to user
-    const setToken = new EmailActivate({
-      email: req.body.email,
-      id: tokenActivate
-    });
-    await setToken.save().catch(err => {
-      console.log(err);
-    });
-
-    // Get user email id
-    const emailToken = await EmailActivate.findOne({
-      email: req.body.email
-    });
-    let fullLink = config.url + "/activate/" + emailToken.id;
-
-    // Send email verify to user email
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: config.account.email,
-        pass: process.env.password
-      }
-    });
-    // create options
-    const optionsEmail = {
-      from: config.account.email,
-      to: req.body.email,
-      subject: "New account created | Activate your account",
-      html: `<!DOCTYPE html><html lang="en"><head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta http-equiv="X-UA-Compatible" content="ie=edge"> <style> body { font-family: sans-serif; color: rgba(0, 0, 0, 0.8); } .brand { color: blue; text-size: 11px; text-decoration: none; font-weight: 500; } p { font-size: 14px; } .end { font-size: 15px; font-weight: 600; margin-top: 20px; text-decoration: underline; } </style></head><body> <h3 class="header-text">Hi Jeremy,</h3> <p> You just created an account at <a href="${config.url}" class="brand">Punicty</a> using this email (${req.body.email}) and now you need to activate your account to be able to log into your account </p> <p> please click the link below here to activate your account. We will delete your account after 24 hours if it is not activated.<br> <a href="${fullLink}">${fullLink}</a> </p> <p> if you feel you didn't create an account today at Punicty just ignore this email.<br> <b>This is an auto email you don't need to reply</b> </p> <p class="end"> - Punicty Team </p></body></html>`
-    };
-    transporter.sendMail(optionsEmail, (err, info) => {
-      if (err) {
+      let checkUser = await UserManager.findOne({
+        email: user.email
+      });
+      if (checkUser) {
         return res.send({
-          status: err.status, message: err.message
+          status: 403,
+          message: "This email is already in use",
+          id: "email"
         });
       }
-      return res.send({
-        status: 200, message: "Your account has been created"
+      // create user
+      UserManager.register(new UserManager({
+        email: user.email,
+        username: user.username,
+        id: user.id,
+        avatar: null,
+        token: user.token,
+        about: null,
+        password: hashedPassword,
+        friends: [],
+        status: "offline",
+        isBot: false,
+        isDisabled: false,
+        isVerified: false,
+        last_online: Date.now(),
+        badge: []
+      }), user.password, async function(err, user) {
+        console.log(user);
+        // Set email id to user
+        const setToken = new EmailActivate({
+          email: req.body.email,
+          id: tokenActivate
+        });
+        await setToken.save().catch(err => {
+          console.log(err);
+        });
+
+        // Get user email id
+        const emailToken = await EmailActivate.findOne({
+          email: req.body.email
+        });
+        let fullLink = config.url + "/activate/" + emailToken.id;
+
+        // Send email verify to user email
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: config.account.email,
+            pass: process.env.password
+          }
+        });
+        // create options
+        const optionsEmail = {
+          from: config.account.email,
+          to: req.body.email,
+          subject: "New account created | Activate your account",
+          html: `<!DOCTYPE html><html lang="en"><head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta http-equiv="X-UA-Compatible" content="ie=edge"> <style> body { font-family: sans-serif; color: rgba(0, 0, 0, 0.8); } .brand { color: blue; text-size: 11px; text-decoration: none; font-weight: 500; } p { font-size: 14px; } .end { font-size: 15px; font-weight: 600; margin-top: 20px; text-decoration: underline; } </style></head><body> <h3 class="header-text">Hi Jeremy,</h3> <p> You just created an account at <a href="${config.url}" class="brand">Punicty</a> using this email (${req.body.email}) and now you need to activate your account to be able to log into your account </p> <p> please click the link below here to activate your account. We will delete your account after 24 hours if it is not activated.<br> <a href="${fullLink}">${fullLink}</a> </p> <p> if you feel you didn't create an account today at Punicty just ignore this email.<br> <b>This is an auto email you don't need to reply</b> </p> <p class="end"> - Punicty Team </p></body></html>`
+        };
+        transporter.sendMail(optionsEmail, (err, info) => {
+          if (err) {
+            return res.send({
+              status: err.status, message: err.message
+            });
+          }
+          req.flash("message", "Please check your email to verify account");
+          return res.send({
+            status: 200, message: "Your account has been created"
+          });
+        });
       });
     });
   });
 });
 
+
+app.use(function(err, req, res, next) {
+  res.locals.message = err.message;
+});
 app.listen(process.env.PORT || 3000, function() {
   console.log("app online!");
 });

@@ -8,18 +8,35 @@
 </head>
 <body>
   <div class="container">
-    <form autocomplete="off" class="needs-validation login">
+    <h1 class="title"><%- config.title %></h1>
+    <form autocomplete="off" method="POST" class="needs-validation login">
       <div class="header">
-        <h3 class="header-text">Welcome back</h3>
-        <hr class="hr" />
+        <h3 class="header-text">Login to your account</h3>
+      </div>
+      <div class="message">
+        <% if (info.length > 0) {
+          %>
+          <div class="message-info-error">
+            <p>
+              <%- info %>
+            </p>
+          </div>
+          <%
+        } %>
       </div>
       <div class="form-group">
         <label class="email-label" for="email">Email</label>
-        <input type="email" placeholder="johndoe@gmail.com" id="email" name="email" class="custom-input email" required>
+        <input type="email" placeholder="Ex. myemail@gmail.com" id="email" name="email" class="custom-input email" required>
+        <div class="email-error invalid-feedback"></div>
       </div>
       <div class="form-group">
         <label class="password-label" for="password">Password</label>
+        <input type="hidden" class="_csrf" value="<%- csrfToken %>">
         <input type="password" placeholder="••••••••••" id="password" name="password" class="password custom-input" required>
+        <div class="password-error invalid-feedback"></div>
+      </div>
+      <div class="forgot">
+        <a href="/forgot-password">Forgot password</a>
       </div>
       <div class="form-group">
         <button type="submit" class="custom-button">Login</button>
@@ -29,5 +46,11 @@
       </div>
     </form>
   </div>
+  <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+  <script>
+    eruda.init();
+  </script>
+  <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="./handle-login.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
 body {
   user-select: none;
-  background-color: white;
+  background-color: #f3f7f8;
   color: #42445A;
   font-family: sans-serif;
 }
@@ -9,26 +9,45 @@ body {
 .container {
   display: flex;
   justify-content: center;
-  min-height: 90vh;
+  flex-direction: column;
   align-items: center;
+  margin-top: 2rem;
+}
+
+.container form {
+  padding: 30px;
+  border-radius: 6px;
+  background-color: white;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+  /*border: 1px solid rgba(0, 0, 0, 0.2);*/
+}
+
+.title {
+  margin-bottom: 20px;
 }
 
 .header {
   position: relative;
-  margin-bottom: 35px;
+  margin-top: 10px;
+  margin-bottom: 25px;
 }
 .header-text {
-  font-family: "Montserrat", sans-serif;
-  font-weight: 800;
+  font-family: "Montserrat", "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 17px;
+  text-align: left;
+  color: rgba(0, 0, 0, 0.5);
 }
+
+/*
 .hr {
   margin-top: -5px;
-  width: 25%;
+  width: 20%;
   margin-left: 5px;
   border: 1px solid rgba(0, 0, 0, 0.3);
   border-radius: 9px;
   position: absolute;
-}
+}*/
 
 label {
   font-size: 13px;
@@ -39,14 +58,22 @@ label {
   width: 100%;
   font-size: 14px;
   padding: 7px 5px 7px 12px;
-  border-radius: 7px;
+  border-radius: 5px;
   outline: none;
   border: 2px solid rgba(0, 0, 0, 0.1);
   transition: border-color 0.2s ease;
 }
-
+.custom-input.is-invalid,
+.custom-input.is-invalid:focus {
+  border-color: red;
+}
 .custom-input:focus {
   border-color: blue;
+}
+
+.invalid-feedback {
+  font-weight: 500;
+  font-size: 11px;
 }
 
 .custom-button {
@@ -59,8 +86,12 @@ label {
   color: white;
   background-color: blue;
   outline: none;
-  border-radius: 5px;
-  transition: transform 0.4s ease-in-out;
+  border-radius: 6px;
+  transition: transform 0.5s ease,
+  opacity 0.4s ease;
+}
+.custom-button:disabled {
+  opacity: 0.5;
 }
 .custom-button:active {
   transform: scale(0.8);
@@ -68,10 +99,45 @@ label {
 
 .action {
   font-weight: 600;
+  color: black;
   font-size: 12px;
   text-align: center;
   margin-top: 20px;
 }
 .action a {
   color: blue;
+}
+
+.forgot {
+  font-weight: 600;
+  text-align: right;
+  font-size: 12px;
+  margin-right: 5px;
+  color: blue;
+  opacity: 0.9;
+  margin-top: 15px;
+}
+
+.message-info-error {
+  /*background-color: #7829DA;*/
+  font-weight: 600;
+  display: flex;
+  /*margin-bottom: 25px;*/
+}
+.message-info-error p {
+
+  display: block;
+  font-size: 12px;
+  color: #004676;
+  padding: 10px;
+  /*border: 1px solid rgba(0, 0, 0, 0.1);*/
+  background-color: #dee2fc;
+  width: 100%;
+  border-radius: 4px;
+}
+
+@media screen and (min-width: 800px) {
+  .container {
+    max-width: 350px;
+  }
 }

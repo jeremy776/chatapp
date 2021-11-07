@@ -35,8 +35,13 @@ label {
   border: none;
   font-weight: bold;
   color: white;
-  transition: transform 0.5s ease;
+  transition:
+  transform 0.3s ease-in-out,
+  opacity 0.4s ease;
   border-radius: 6px;
+}
+.submit-button:disabled {
+  opacity: 0.4;
 }
 .submit-button:active {
   transform: scale(0.8);
@@ -45,7 +50,7 @@ label {
   margin-top: 15px;
   font-weight: bold;
   color: black;
-  font-size: 11px;
+  font-size: 12px;
   text-align: center;
 }
 .action a {

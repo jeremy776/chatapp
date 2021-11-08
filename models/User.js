@@ -39,5 +39,6 @@ const options = {
     UserExistsError: 'A user with the given email is already registered'
   }
 };
+
 UserSchema.plugin(passportMongo, options);
 module.exports = mongoose.model("User", UserSchema);

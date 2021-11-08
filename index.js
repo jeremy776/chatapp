@@ -13,6 +13,7 @@ const bcrypt = require("bcryptjs");
 const RD = require("reallydangerous");
 const config = require("./config.json");
 const fs = require("fs");
+const sessionShare = require("express-socket.io-session");
 
 const Protection = csrf({
   cookie: true
@@ -63,6 +64,33 @@ passport.use(new localStrategy({
 }, UserManager.authenticate()));
 passport.serializeUser(UserManager.serializeUser());
 passport.deserializeUser(UserManager.deserializeUser());
+
+const notAuthenticated = require("./util/NotAuthenticated.js");
+
+// handle web socket using socket.io
+const socketio = require("socket.io");
+const serverListen = app.listen(process.env.PORT || 3000, function() {
+  console.log("Server Active");
+});
+const io = socketio(serverListen);
+
+// use express shared session
+io.use(sessionShare(ExpressSession, {
+  autoSave: true
+}));
+
+io.on("connection", async function(socket) {
+  // make user status to online - later
+  /*let email = socket.handshake.session.passport.email;
+  let userDb = await UserManager.findOne({
+    email
+  });
+  userDb.last_online = "online";
+  await userDb.save();*/
+});
+
+// use routes
+app.use("/me", require("./router/me.js"));
 
 // Wihout routes
 app.get("/register", Protection, notAuthenticated, function(req, res) {
@@ -118,7 +146,7 @@ app.post("/login/", Protection, async function(req, res, next) {
     return res.redirect("/login");
   }
   passport.authenticate("local", {
-    successRedirect: "/",
+    successRedirect: "/me",
     failureRedirect: "/login",
     failureFlash: true
   })(req, res, next);
@@ -238,20 +266,7 @@ app.post("/new-account", Protection, async function(req, res) {
   });
 });
 
-function notAuthenticated(req, res, next) {
-  if (!req.isAuthenticated()) return next();
-  return res.redirect("/");
-}
-function isAuthenticate(req, res, next) {
-  if (req.isAuthenticated()) return next();
-  return res.redirect("/login");
-}
-
 app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err: {};
-});
-
-app.listen(process.env.PORT || 3000, function() {
-  console.log("Server Active");
 });

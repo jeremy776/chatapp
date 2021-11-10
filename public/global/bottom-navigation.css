@@ -1,0 +1,28 @@
+.bottom__navigation {
+  width: 100%;
+  position: fixed !important;
+  bottom: 0;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.bottom__navigation .bottom__navigation__list {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.bottom__navigation__list a {
+  padding: 15px;
+  width: 100%;
+  text-align: center;
+}
+
+.bot-icon {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.bot-icon.active {
+  color: black;
+}

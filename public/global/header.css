@@ -1,0 +1,18 @@
+.header, .header__not__fixed {
+  color: #42445A;
+  padding: 15px;
+  position: fixed;
+  top: 0;
+  display: block;
+  width: 100%;
+  font-size: 25px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  background: #DEE2FC;
+  z-index: 5;
+  /* linear-gradient(-130deg, #40bd40, #70bd40);*/
+}
+
+.header__not__fixed {
+  position: static !important;
+}

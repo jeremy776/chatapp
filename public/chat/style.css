@@ -1,0 +1,145 @@
+* {
+  font-family: sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -ms-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+}
+
+.content {
+  margin-top: 15px;
+  z-index: 2;
+  width: 100%;
+}
+
+/* USER CHAT */
+.content .user-header {
+  padding: 10px;
+  margin-top: 3px;
+  position: relative;
+}
+
+.name-status h5 .time-msg {
+  position: absolute;
+  top: 15%;
+  right: 0;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.4);
+}
+.unread-msg {
+  color: white;
+  background: #FF2F2F;
+  vertical-align: top;
+  font-size: 10px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+}
+.content .user-header:last-child {
+  margin-bottom: 4rem;
+}
+
+.content .user-header:hover {
+  background-color: #E2E2E2;
+  transition: all 0.4s ease;
+}
+
+.content .user-header .user {
+  display: flex;
+}
+
+.user-header .user .name-status {
+  display: flex;
+  margin-left: 15px;
+  justify-content: center;
+  align-items: start;
+  flex-direction: column;
+}
+.user .name-status h5 {
+  width: 100%;
+  position: relative;
+}
+.name-status .status {
+  margin-top: -10px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.content .user-header img {
+  width: 60px;
+  border-radius: 50%;
+}
+
+.user-header img.story {
+  border: 1px solid blue;
+}
+
+/* GUILD */
+.guild-header {
+  padding: 10px;
+  margin-top: 3px;
+}
+
+.guild-header:hover {
+  background-color: #E2E2E2;
+  transition: all 0.4s ease;
+}
+
+.guild-header .guild {
+  display: flex;
+}
+
+.guild-header .guild .name-member {
+  display: flex;
+  margin-left: 15px;
+  justify-content: center;
+  align-items: start;
+  flex-direction: column;
+}
+
+.guild-header .guild .name-member .total-member {
+  margin-top: -10px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.guild-header .guild img {
+  width: 60px;
+  border-radius: 50%;
+}
+
+.select {
+  font-family: "Mukta", sans-serif;
+  width: 100%;
+  display: flex;
+  width: 100%;
+  padding: 10px;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  z-index: 4;
+}
+
+.select span {
+  display: block;
+  padding: 10px;
+  display: flex;
+  color: #82838E;
+  width: 50%;
+  justify-content: center;
+}
+
+.select .active {
+  color: black;
+  transition: all 0.4s ease;
+  color: white;
+  border-radius: 30px;
+  background-color: #AAB2FF;
+}

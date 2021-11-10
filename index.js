@@ -81,12 +81,24 @@ io.use(sessionShare(ExpressSession, {
 
 io.on("connection", async function(socket) {
   // make user status to online - later
-  /*let email = socket.handshake.session.passport.email;
+  let email = socket.handshake.session.passport.email;
   let userDb = await UserManager.findOne({
     email
   });
   userDb.last_online = "online";
-  await userDb.save();*/
+  await userDb.save();
+
+  socket.on("disconnect", async () => {
+    if (socket.handshake.session.passport) {
+      let user = await UserManager.findOne({
+        email: socket.handshake.session.passport.email
+      });
+      user.last_online = Date.now();
+      await user.save();
+    } else {
+      return;
+    };
+  });
 });
 
 // use routes
@@ -94,23 +106,25 @@ app.use("/me", require("./router/me.js"));
 
 // Wihout routes
 app.get("/register", Protection, notAuthenticated, function(req, res) {
-  res.render("register.ejs", {
-    req,
-    res,
-    csrfToken: req.csrfToken(),
-    config
-  });
+  res.render("register.ejs",
+    {
+      req,
+      res,
+      csrfToken: req.csrfToken(),
+      config
+    });
 });
 
 app.get("/login", Protection, notAuthenticated, function(req, res) {
-  res.render("login.ejs", {
-    req,
-    res,
-    csrfToken: req.csrfToken(),
-    config,
-    info: req.flash("message"),
-    err: req.flash("error")
-  });
+  res.render("login.ejs",
+    {
+      req,
+      res,
+      csrfToken: req.csrfToken(),
+      config,
+      info: req.flash("message"),
+      err: req.flash("error")
+    });
 });
 
 app.get("/activate/:id", async function(req, res) {

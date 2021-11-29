@@ -1,7 +1,8 @@
 body {
-  background-color: white;
+  background-color: #f3f7f8;
   color: #42445A;
   user-select: none;
+  overflow-x: none;
   webkit-user-select: none;
   font-family: sans-serif;
 }
@@ -13,16 +14,20 @@ label {
 /* DEKSTOP FIRST */
 .container {
   display: flex;
-  min-height: 90vh;
+  flex-direction: column;
   justify-content: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
   align-items: center;
 }
 .container form {
-  width: 50%;
-  border-radius: 7px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
-  padding: 25px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+  background-color: white;
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0.1) !important;
+  padding: 30px !important;
+}
+.header-title {
+  margin-bottom: 15px;
 }
 .submit-button {
   margin-top: 35px;
@@ -75,10 +80,7 @@ label {
 }
 
 @media (max-width: 767px) {
-  .container form {
-    border: none;
-    width: 90%!important;
-    padding: 0;
-    box-shadow: none;
+  .container {
+    display: block;
   }
 }

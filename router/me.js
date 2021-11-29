@@ -21,4 +21,13 @@ router.get("/chat", isLogin, async function(req, res) {
   });
 });
 
+// @GET
+router.get("/friends", isLogin, async function(req, res) {
+  res.render("me/friends.ejs", {
+    res,
+    req,
+    config
+  });
+});
+
 module.exports = router;

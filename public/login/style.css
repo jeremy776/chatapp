@@ -3,7 +3,6 @@ body {
   user-select: none;
   background-color: #f3f7f8;
   color: #42445A;
-  font-family: sans-serif;
 }
 
 .container {
@@ -126,9 +125,13 @@ label {
   background-color: red !important;
   color: white !important;
 }
-
-@media screen and (min-width: 800px) {
+.captcha {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+@media screen and (max-width: 800px) {
   .container {
-    max-width: 350px;
+    /*max-width: 350px;*/
+    display: block !important;
   }
 }

@@ -83,6 +83,7 @@ document.querySelector(".new").addEventListener("submit", (e) => {
     method: "POST",
     data: {
       "email": email.value,
+      "birthday": birthday.value,
       "username": username.value,
       "password": password.value,
       "_csrf": document.getElementById("_csrf").value
@@ -115,3 +116,8 @@ document.querySelector(".new").addEventListener("submit", (e) => {
     }
   }
 });
+
+function captchaDone() {
+  let button = document.querySelector(".submit-button");
+  button.removeAttribute("disabled");
+}

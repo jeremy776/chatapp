@@ -1,46 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
   <meta charset="UTF-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <style>
     body {
-      font-family: sans-serif;
-      color: rgba(0, 0, 0, 0.8);
+      background-color: #e5eaeb;
     }
-    .brand {
-      color: blue;
-      text-size: 11px;
-      text-decoration: none;
-      font-weight: 500;
+    .container {
+      padding: 15px;
+    }
+    .head-container {
+      background-color: white;
+      padding: 20px 40px 20px 40px;
+      border-radius: 2px;
+    }
+    .header-text {
+      font-family: "Nunito";
+      font-weight: 800;
+      color: #42445A;
     }
     p {
-      font-size: 14px;
+      font-family: "Nunito";
     }
-    .end {
-      font-size: 15px;
+    .verify-button {
+      padding: 10px;
+      background-color: blue;
+      color: white;
+      border-radius: 5px;
+      font-family: "Poppins";
+      box-shadow: 2px 2px 1px rgba(0,0,0,0.2);
+      font-size: 12px;
+      margin: 20px 10px 10px 10px;
+      border: none;
       font-weight: 600;
-      margin-top: 20px;
-      text-decoration: underline;
+      outline: none;
+    }
+    .verify-button:hover {
+      color: white;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-  <h3 class="header-text">Hi Jeremy,</h3>
-  <p>
-    You just created an account at <a href="${config.url}" class="brand">Punicty</a> using this email (${req.body.email}) and now you need to activate your account to be able to log into your account
-  </p>
-  <p>
-    please click the link below here to activate your account. We will delete your account after 24 hours if it is not activated.<br>
-    <a href="${fullLink}">${fullLink}</a>
-  </p>
-  <p>
-    if you feel you didn't create an account today at Punicty just ignore this email.<br>
-    <b>This is an auto email you don't need to reply</b>
-  </p>
-  <p class="end">
-    - Punicty Team
-  </p>
+  <div class="container">
+    <div class="head-container">
+      <h4 class="header-text">Hello ${req.body.username},</h4>
+      <p>
+        You just created an account on Punicty using this email (${req.body.email}), now is the time to verify your email. Click the button below to verify your email as soon as possible. The buttons below will no longer work after 24 hours.
+      </p>
+      <p>
+        <b style="color:#42445A">Username</b>: ${req.body.username}
+      </p>
+      <center><a href="${fullLink}" class="verify-button">Verify Email</a></center>
+    </div>
+  </div>
 </body>
 </html>

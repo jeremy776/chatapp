@@ -1,0 +1,10 @@
+.content {
+  padding: 15px;
+}
+.header__not__fixed {
+  display: flex;
+  justify-content: space-between;
+}
+.add-user {
+  padding: 7px;
+}

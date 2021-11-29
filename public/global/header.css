@@ -1,6 +1,6 @@
 .header, .header__not__fixed {
   color: #42445A;
-  padding: 15px;
+  padding: 10px 10px 10px 20px;
   position: fixed;
   top: 0;
   display: block;

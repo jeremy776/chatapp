@@ -8,7 +8,7 @@
 </head>
 <body>
   <div class="container">
-    <h1 class="title"><%- config.title %></h1>
+    <h1 style="text-align: center;" class="title"><%- config.title %></h1>
     <form autocomplete="off" method="POST" class="needs-validation login">
       <div class="header">
         <h3 class="header-text">Login to your account</h3>
@@ -35,17 +35,27 @@
         <input type="password" placeholder="••••••••••" id="password" name="password" class="password custom-input" required>
         <div class="password-error invalid-feedback"></div>
       </div>
+      <div class="captcha">
+        <div class="g-recaptcha" data-callback="whenCaptchaDone" data-sitekey="6Le9pmYdAAAAAHH6x0upkkrGDdp6Xs9EgV1D1k89"></div>
+      </div>
       <div class="forgot">
         <a href="/forgot-password">Forgot password</a>
       </div>
       <div class="form-group">
-        <button type="submit" class="custom-button">Login</button>
+        <button disabled="true" type="submit" class="custom-button">Login</button>
       </div>
       <div class="action">
         Don't have an account yet? <a href="/register">Register</a>
       </div>
     </form>
   </div>
+  <script type="text/javascript">
+    function whenCaptchaDone() {
+      let button = document.querySelector(".custom-button");
+      button.disabled = false;
+    }
+  </script>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script>
 </body>
 </html>

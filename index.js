@@ -34,7 +34,7 @@ mongoose.connect(process.env.mongourl, {
 
 // app setup
 const ExpressSession = require("express-session")({
-  secret: "#jbdisn:3+_8?$)').",
+  secret: "$$&&&##--@67396;jbag",
   resave: false,
   saveUninitialized: false
 });
@@ -70,7 +70,7 @@ const notAuthenticated = require("./util/NotAuthenticated.js");
 // handle web socket using socket.io
 const socketio = require("socket.io");
 const serverListen = app.listen(process.env.PORT || 3000, function() {
-  console.log("Server Active");
+  console.log(`Server Active on port ${process.env.PORT || 3000}`);
 });
 const io = socketio(serverListen);
 
@@ -80,24 +80,30 @@ io.use(sessionShare(ExpressSession, {
 }));
 
 io.on("connection", async function(socket) {
-  // make user status to online - later
-  let email = socket.handshake.session.passport.email;
-  let userDb = await UserManager.findOne({
-    email
-  });
-  userDb.last_online = "online";
-  await userDb.save();
-
+  // make user status to online
+  if (socket.handshake.session.passport) {
+    let email = socket.handshake.session.passport.user;
+    let userDb = await UserManager.findOne({
+      email: email
+    });
+    userDb.last_online = "online";
+    await userDb.save();
+    console.info(`${userDb.username} - Connected To Server`);
+  } else {
+    console.warn("Unauthorized user try to connect, but i can handle it");
+  }
   socket.on("disconnect", async () => {
+    // set user status to offline when disconnect
     if (socket.handshake.session.passport) {
       let user = await UserManager.findOne({
-        email: socket.handshake.session.passport.email
+        email: socket.handshake.session.passport.user
       });
+      console.info(`${user.username} - Disconnected`);
       user.last_online = Date.now();
       await user.save();
     } else {
       return;
-    };
+    }
   });
 });
 
@@ -105,6 +111,10 @@ io.on("connection", async function(socket) {
 app.use("/me", require("./router/me.js"));
 
 // Wihout routes
+app.get("/", function(req, res) {
+  res.redirect("/me");
+});
+
 app.get("/register", Protection, notAuthenticated, function(req, res) {
   res.render("register.ejs",
     {
@@ -156,7 +166,7 @@ app.post("/login/", Protection, async function(req, res, next) {
     return res.redirect("/login");
   }
   if (!user.isVerified) {
-    req.flash("message", "Unverified account detected, please check your email to verify. didn't see it? Resens verification email");
+    req.flash("message", "Unverified account detected, please check your email to verify. didn't see it? Resend verification email");
     return res.redirect("/login");
   }
   passport.authenticate("local", {
@@ -221,13 +231,14 @@ app.post("/new-account", Protection, async function(req, res) {
         email: user.email,
         username: user.username,
         id: user.id,
-        avatar: null,
+        avatar: "",
         token: user.token,
-        about: null,
+        about: "",
         password: hashedPassword,
         friends: [],
         status: "offline",
         isBot: false,
+        birthday: user.birthday,
         isDisabled: false,
         isVerified: false,
         last_online: Date.now(),
@@ -261,8 +272,9 @@ app.post("/new-account", Protection, async function(req, res) {
         const optionsEmail = {
           from: config.account.email,
           to: req.body.email,
-          subject: "New account created | Activate your account",
-          html: `<!DOCTYPE html><html lang="en"><head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta http-equiv="X-UA-Compatible" content="ie=edge"> <style> body { font-family: sans-serif; color: rgba(0, 0, 0, 0.8); } .brand { color: blue; text-size: 11px; text-decoration: none; font-weight: 500; } p { font-size: 14px; } .end { font-size: 15px; font-weight: 600; margin-top: 20px; text-decoration: underline; } </style></head><body> <h3 class="header-text">Hi Jeremy,</h3> <p> You just created an account at <a href="${config.url}" class="brand">Punicty</a> using this email (${req.body.email}) and now you need to activate your account to be able to log into your account </p> <p> please click the link below here to activate your account. We will delete your account after 24 hours if it is not activated.<br> <a href="${fullLink}">${fullLink}</a> </p> <p> if you feel you didn't create an account today at Punicty just ignore this email.<br> <b>This is an auto email you don't need to reply</b> </p> <p class="end"> - Punicty Team </p></body></html>`
+          subject: "Activate Account - Punicty",
+          html:
+          `<!DOCTYPE html><html lang="en"><head> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous"> <meta charset="UTF-8"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet"> <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap" rel="stylesheet"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta http-equiv="X-UA-Compatible" content="ie=edge"> <style> body { background-color: #e5eaeb; } .container { padding: 15px; } .head-container { background-color: white; padding: 20px 40px 20px 40px; border-radius: 2px; } .header-text { font-family: "Nunito"; font-weight: 800; color: #42445A; } p { font-family: "Nunito"; } .verify-button { padding: 10px; background-color: blue; color: white; border-radius: 5px; font-family: "Poppins"; box-shadow: 2px 2px 1px rgba(0,0,0,0.2); font-size: 12px; margin: 20px 10px 10px 10px; border: none; font-weight: 600; outline: none; } .verify-button:hover { color: white; text-decoration: none; } </style></head><body> <div class="container"> <div class="head-container"> <h4 class="header-text">Hello ${req.body.username},</h4> <p> You just created an account on Punicty using this email (${req.body.email}), now is the time to verify your email. Click the button below to verify your email as soon as possible. The buttons below will no longer work after 24 hours. </p> <p><br/> <center><a href="${fullLink}" class="verify-button">Verify Email</a></center> </div> </div></body></html>`
         };
         transporter.sendMail(optionsEmail, (err, info) => {
           if (err) {

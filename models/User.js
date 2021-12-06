@@ -16,6 +16,7 @@ const UserSchema = new mongoose.Schema({
   birthday: String,
   about: String,
   friends: Array,
+  customStatus: String,
   status: String,
   last_online: String,
   isBot: Boolean,

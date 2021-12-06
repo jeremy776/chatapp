@@ -1,0 +1,257 @@
+* {
+  overflow-x: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+.content {
+  z-index: 2;
+  margin-top: 55px;
+  width: 100%;
+}
+.content .parent-of-both-parent {
+      display: flex;
+      padding: 5px;
+    }
+    .content .parent-user-avatar {
+      position: relative;
+      overflow: hidden;
+    }
+    .parent-user-username {
+      margin-left: 20px;
+      display: flex;
+      height: 100%;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .content .user-avatar {
+      width: 90px !important;
+      height: 90px !important;
+      border-radius: 50%;
+      display: block;
+    }
+    .content .username {
+      font-family: 'Rubik';
+      overflow: hidden;
+      display: inline-block;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      font-weight: 400;
+      font-size: 20px;
+    }
+    .content .status {
+      font-size: 15px;
+      color: rgba(0,0,0,0.6);
+      word-wrap: break-word;
+      font-family: 'Roboto';
+      font-weight: 500;
+      display: inline-block;
+      word-break: break-word;
+    }
+    .content .profile-show {
+      box-shadow: 0 0 3px #919191;
+      padding: 25px;
+      width:100%;
+    }
+    .section {
+      padding: 20px;
+      display: flex;
+      margin-top: 5px;
+      font-size: 18px;
+      font-family: 'Roboto';
+    }
+    .section div.icon-section {
+      margin-right: 20px;
+    }
+    .section:hover {
+      background-color: #E2E2E2;
+      transition: all 0.4s ease;
+    }
+    .edit-profile {
+      display:none;
+      z-index: 2;
+      margin-top: 60px;
+    }
+    .back-btn {
+      position: relative;
+      top:5px;
+      background-color: transparent;
+      border: none;
+      outline: none;
+    }
+    .pen-avatar,
+    .pen-username,
+    .section,
+    .save-changes {
+      cursor: pointer;
+    }
+    /* STYLE PEN AVATAR */
+    .pen-avatar {
+      position: absolute;
+      right: 0;
+      border-radius: 50%;
+      overflow: hidden;
+      height: 35px;
+      padding: 10px;
+      width: 35px;
+      background-color: #DEE2FC;
+      border: 2px solid white;
+      display: none;
+      bottom: -2px;
+    }
+    .pen-avatar:hover {
+      background-color: #a1a4b5;
+    }
+    .pen-avatar svg {
+      display: flex;
+      transform: scale(1.3);
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+    .pen-avatar input {
+      position: absolute;
+      visibility: hidden;
+    }
+    /* END PEN AVATAR */
+    .username-and-pen {
+      display: flex;
+    }
+    /* USERNAME PEN STYLE */
+    .pen-username {
+      justify-content: center;
+      display: flex;
+      height: 100%;
+      display: none;
+      margin-left: 10px;
+    }
+    .pen-username:hover, .header svg:hover {
+      color:#0080FF;
+    }
+    .pen-avatar, .pen-username, .header svg, .save-changes, .clear {
+      animation: animation-fade 0.6s ease;
+    }
+    /* END USERNAME PEN */
+    @keyframes animation-fade {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+    }
+    .header-discard {
+      height: 100%;
+      top: 0;
+      position: fixed;
+      z-index: 20;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      display: none;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+    .discard-changes {
+      font-weight: 500;
+      font-family: sans-serif;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      margin: 0 auto;
+      z-index: 100 !important;
+      background-color: #FFFFFF;
+      border-radius: 5px;
+      padding: 15px;
+      user-select: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none; 
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+    .discard-changes-text {
+      text-align: center;
+      font-family: 'Roboto';
+      font-size: 18px;
+    }
+    
+    .discard-changes-action {
+      display: flex;
+      width: 100%;
+      font-family: 'Roboto';
+      margin-top: 15px;
+    }
+    .discard-changes .discard-btn {
+      background-color: #FF5050;
+      border-radius: 4px;
+      padding: 8px;
+      margin-left: 5px;
+      color: white;
+      font-weight: 500;
+    }
+    
+    .discard-changes .discard-btn:hover {
+      background-color: #CF4848;
+    }
+    .discard-changes .cancel-btn {
+      border-radius: 4px;
+      color: #424348;
+      font-weight: 500;
+      padding: 8px;
+      color: rgba(0, 0, 0, 0.5);
+    }
+    .discard-changes .cancel-btn:hover {
+      background-color: #DEDDDD;
+    }
+    .save-changes {
+      border: none;
+      outline: none;
+      color: #374ee6;
+      font-weight: lighter;
+      font-family: 'Roboto';
+      float: right;
+      display: none;
+    }
+    .save-changes:hover {
+      color:#5972cf;
+    }
+    .header svg {
+      position: relative;
+      top:-7.5px;
+    }
+    .input-list {
+      display: none;
+      width: 100%;
+      left:5%;
+      padding: 15px;
+      z-index: 5;
+      border-radius: 7px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      background-color: #87abed;
+      animation:input-animation 0.6s ease;
+    }
+    .input-list .status-input {
+      border: 1px solid rgba(0, 0, 0, 0.4);
+      border-radius: 5px;
+      outline: none;
+      transition: width 0.5s ease;
+      padding: 9px; 
+      width: 90%;
+    }
+    .input-list .clear {
+      background-color: transparent;
+      margin-left: 5px;
+      border: none;
+      outline: none;
+      color: white;
+      display:none;
+    }
+    .input-list .clear:hover {
+      color: #c3cee3;
+    }

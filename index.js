@@ -81,12 +81,19 @@ io.use(sessionShare(ExpressSession, {
 
 io.on("connection", async function(socket) {
   // make user status to online
-  if (socket.handshake.session.passport) {
-    let email = socket.handshake.session.passport.user;
+  
+  if (socket.handshake.session.passport || socket.handshake.auth.email) {
+    let email;
+    if(socket.handshake.session.passport) {
+      email = socket.handshake.session.passport.user;
+    } else {
+      email = socket.handshake.auth.email;
+    }
     let userDb = await UserManager.findOne({
       email: email
     });
     userDb.last_online = "online";
+    userDb.status = "online";
     await userDb.save();
     console.info(`${userDb.username} - Connected To Server`);
   } else {
@@ -94,17 +101,42 @@ io.on("connection", async function(socket) {
   }
   socket.on("disconnect", async () => {
     // set user status to offline when disconnect
-    if (socket.handshake.session.passport) {
+    if (socket.handshake.session.passport || socket.handshake.auth.email) {
+      let email;
+      if(socket.handshake.session.passport) {
+        email = socket.handshake.session.passport.user;
+      } else {
+        email = socket.handshake.auth.email;
+      }
       let user = await UserManager.findOne({
-        email: socket.handshake.session.passport.user
+        email: email
       });
       console.info(`${user.username} - Disconnected`);
       user.last_online = Date.now();
+      user.status = "offline";
       await user.save();
     } else {
       return;
     }
   });
+  // username change
+  socket.on("username-change",
+    async (m) => {
+      let user = await UserManager.findOne({
+        email: socket.handshake.session.passport.user
+      });
+      user.username = m.username;
+      await user.save();
+    });
+  // status change
+  socket.on("status-change",
+    async (e) => {
+      let user = await UserManager.findOne({
+        email: socket.handshake.session.passport.user
+      });
+      user.customStatus = e.status;
+      await user.save();
+    });
 });
 
 // use routes
@@ -237,6 +269,7 @@ app.post("/new-account", Protection, async function(req, res) {
         password: hashedPassword,
         friends: [],
         status: "offline",
+        customStatus: null,
         isBot: false,
         birthday: user.birthday,
         isDisabled: false,
@@ -290,6 +323,45 @@ app.post("/new-account", Protection, async function(req, res) {
       });
     });
   });
+});
+
+// get api from front end
+app.get("/api/user", async function(req, res) {
+  let user = await UserManager.findOne({
+    token: req.headers.authorization
+  });
+  return res.send({
+    about: user.about,
+    avatar: user.avatar,
+    badge: user.badge,
+    birthday: user.birthday,
+    createdAt: user.createdAt,
+    customStatus: user.customStatus,
+    email: user.email,
+    friends: user.friends,
+    id: user.id,
+    isBot: user.isBot,
+    isVerified: user.isVerified,
+    last_online: user.last_online,
+    status: user.status,
+    username: user.username
+  });
+});
+app.post("/api/login", async function(req, res) {
+  let body = req.body;
+  let user = await UserManager.findOne({
+    email: body.email
+  });
+  if(!user) {
+    return res.send({status: 401, message: "Email not found"});
+  }
+  bcrypt.compare(body.password, user.password, function(err, e) {
+    if(e == true) {
+      return res.send({status: 200, token: user.token});
+    } else {
+      return res.send({status: 401, message: "Incorrect password"});
+    }
+  })
 });
 
 app.use(function(err, req, res, next) {

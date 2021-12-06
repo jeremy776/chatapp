@@ -1,0 +1,275 @@
+<html>
+<head>
+  <title><%- req.user.username %> | User Settings</title>
+  <link rel="stylesheet" href="<%- config.url %>/global/bottom-navigation.css" />
+  <link rel="stylesheet" href="<%- config.url %>/global/header.css" />
+  <link rel="stylesheet" href="<%- config.url %>/profile/style.css" />
+  <meta name="theme-color" content="#9aa6f6" />
+  <script src="https://kit.fontawesome.com/3ab54522ca.js" crossorigin="anonymous"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+  <div class="header" id="header">
+    <span>User Settings</span>
+    <span class="save-changes" id="save-changes" onclick="save()">Save</span>
+  </div>
+  <div class="content" id="content">
+    <div class="profile-show">
+      <div class="form-input" autocomplete="off">
+        <div class="input-list" id="input-list">
+          <input placeholder="Set Status" name="" class="status-input" id="status-input" cols="30" rows="1"/>
+          <button id="clear-btn" class="clear" onclick="clearStatus()">Clear</button>
+        </div>
+      </div>
+      <div class='row no-gutters parent-of-both-parent'>
+        <div class="col-4 parent-of-parent-avatar">
+          <div class='parent-user-avatar'>
+            <img class="user-avatar" id="user-avatar" src="https://media.discordapp.net/attachments/767626189006700564/905332198264160326/Screenshot_2021-11-02-09-29-01-232_com.discord.png" alt="user-profile" />
+            <span id="pen-avatar" class="pen-avatar">
+              <input id="input-avatar" onChange="avatarChange(this)" accept="image/*, .jpg, .png" type="file" />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+              </svg>
+            </span>
+          </div>
+        </div>
+        <div class="col-8 parent-of-parent-username">
+          <div class='parent-user-username'>
+            <div class='username-and-pen'>
+              <span id="username" class="username"><%- req.user.username %></span>
+              <svg id="pen-username" class="pen-username" onclick="changeUsername()" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+              </svg>
+            </div>
+            <span id="status" class="status"><%- req.user.customStatus || "" %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="section-list">
+      <div class="section" id="section" onclick="editProfile()">
+        <div class='icon-section'>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+            <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+          </svg>
+        </div>
+        <div class='name-section'>
+          <span>Edit Profile</span>
+        </div>
+      </div>
+      <div class="section" id="section" onclick="changeStatus()">
+        <div class='icon-section'>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cloud-moon" viewBox="0 0 16 16">
+            <path d="M7 8a3.5 3.5 0 0 1 3.5 3.555.5.5 0 0 0 .625.492A1.503 1.503 0 0 1 13 13.5a1.5 1.5 0 0 1-1.5 1.5H3a2 2 0 1 1 .1-3.998.5.5 0 0 0 .509-.375A3.502 3.502 0 0 1 7 8zm4.473 3a4.5 4.5 0 0 0-8.72-.99A3 3 0 0 0 3 16h8.5a2.5 2.5 0 0 0 0-5h-.027z" />
+            <path d="M11.286 1.778a.5.5 0 0 0-.565-.755 4.595 4.595 0 0 0-3.18 5.003 5.46 5.46 0 0 1 1.055.209A3.603 3.603 0 0 1 9.83 2.617a4.593 4.593 0 0 0 4.31 5.744 3.576 3.576 0 0 1-2.241.634c.162.317.295.652.394 1a4.59 4.59 0 0 0 3.624-2.04.5.5 0 0 0-.565-.755 3.593 3.593 0 0 1-4.065-5.422z" />
+          </svg>
+        </div>
+        <div class='name-section'>
+          <span>Change Status</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class='header-discard'>
+    <div class="discard-changes" id="discard-changes">
+      <div class='discard-changes-text'>Discard your unsaved changes?</div>
+      <div class="discard-changes-action">
+        <div onclick="cancelBtn()" class="cancel-btn">Cancel</div>
+        <div onclick="discardBtn()" class="discard-btn">Discard</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="bottom__navigation" id="bottom-nav">
+    <div class="bottom__navigation__list">
+      <a href="/">
+        <svg class="bot-icon" xmlns="http://www.w3.org/2000/svg" style="height: 1.5rem;width: 1.5rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+      </a>
+      <a href="/me/chat">
+        <svg class="bot-icon" xmlns="http://www.w3.org/2000/svg" style="height: 1.5rem; width: 1.5rem" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+      </a>
+      <a href="/me/friends">
+        <svg class="bot-icon" xmlns="http://www.w3.org/2000/svg" style="height: 1.5rem;width: 1.5rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      </a>
+      <a href="#">
+        <svg class="bot-icon active" xmlns="http://www.w3.org/2000/svg" style="height: 1.5rem;width: 1.5rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </a>
+    </div>
+  </div>
+  <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+<script>eruda.init();</script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.2/socket.io.js"></script>
+  <script>
+    const socket = io();
+    this.user = {
+      "username": "<%- req.user.username %>",
+      "avatarURL": "<%- req.user.avatar %>",
+      "status": "<%- req.user.customStatus %>"
+    }
+    this.profileChanged;
+    this.statusChanged;
+    
+    // set Status
+    if(this.user.status) {
+      document.querySelector("status-input").value = this.user.status;
+    }
+    // Profile edit (Username, Avatar)
+    function editProfile() {
+      visibleProfile("half", `<button onclick="back()" class="back-btn"><svg xmlns="http://www.w3.org/2000/svg" style="height: 1.25rem;width:1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg></button>&nbspEdit Profile`, "profile");
+    }
+    // Back function
+    function back() {
+      if(this.profileChanged || this.statusChanged) {
+        return document.querySelector('.header-discard').style.display = "flex";
+      } else {
+        visibleProfile("back", "User Settings");
+        document.getElementById('username').innerText = this.user.username;
+        document.getElementById('status').innerText = this.user.status;
+        document.getElementById("status-input").value = this.user.status;
+      }
+    }
+    // trigger the input when click avatar pen
+    document.getElementById('pen-avatar').onclick = function() {
+      document.getElementById("input-avatar").click();
+    }
+    // change username function
+    function changeUsername() {
+      let newName = prompt("Masukan nama baru kamu", this.user.username);
+      
+      if(!newName || newName === this.user.username) return;
+      
+      if(newName.length > 20) return alert("The name should be 1-20 length!");
+      if(newName.length < 2) return alert('Usernam too short');
+      
+      document.getElementById('username').innerText = newName;
+      changed("profile");
+    }
+    
+    // discard pop up
+    function discardBtn() {
+      document.getElementById('save-changes').style.display = "none";
+      document.querySelector('.header-discard').style.display = "none";
+      this.profileChanged = null;
+      this.statusChanged = null;
+      statusCheckingInterval();
+      back();
+    }
+    function cancelBtn() {
+      return document.querySelector('.header-discard').style.display = "none"; 
+    }
+    // changed function
+    function changed(type) {
+      this[type+"Changed"] = true;
+      document.getElementById("save-changes").style.display = "block";
+    }
+    // save function
+    function save() {
+      
+      // send changed to backend
+      if(this.profileChanged) {
+        socket.emit("username-change", {
+          username: document.getElementById("username").innerText
+        });
+      }
+      if(this.statusChanged) {
+        socket.emit("status-change", {
+          status: document.getElementById("status-input").value
+        })
+      }
+      
+      this.profileChanged = null;
+      this.statusChanged = null;
+      this.user.username = document.getElementById("username").innerText;
+      this.user.status = document.getElementById("status-input").value;
+      
+      document.getElementById('save-changes').style.display = "none";
+      statusCheckingInterval();
+      back();
+    }
+    // change status function
+    function changeStatus() {
+      visibleProfile("all", `<button onclick="back()" class="back-btn"><svg xmlns="http://www.w3.org/2000/svg" style="height: 1.25rem;width:1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg></button>&nbspChange Status`, "status");
+    }
+    // clear status
+    function clearStatus() {
+      document.getElementById("status-input").value = "";
+      document.getElementById("status-input").focus();
+    }
+    // change header text
+    function visibleProfile(type, msgHeader, style) {
+      let wantToHide = ["bottom-nav", "section-list", "status", "user-avatar", "username", "input-list"];
+      let profileHide = ["pen-avatar", "pen-username"];
+      document.getElementById("header").children[0].innerHTML = msgHeader;
+      /* Hiding or Showing Normal Style */
+      if(type === "half") {
+        for(let x = 0; x < 3; x++) {
+          document.getElementById(wantToHide[x]).style.display = "none";
+        }
+      } else if(type === "all") {
+        for(let x = 0; x < wantToHide.length; x++) {
+          document.getElementById(wantToHide[x]).style.display = "none";
+        }
+      } else if(type === "back") {
+        for(x of wantToHide.concat(profileHide)) {
+          document.getElementById(x).style.display = "";
+        }
+      }
+      /* Hiding or Showing Style */
+      if(style === "profile") {
+        for(x of profileHide) {
+          document.getElementById(x).style.display = "block";
+          document.getElementById("pen-username").style.left = Math.ceil(115+document.getElementById('username').clientWidth);
+        }
+      } else if(style === "status") {
+        document.getElementById("input-list").style.display = "flex";
+        document.getElementById("status-input").focus();
+        statusCheckingInterval(true);
+      }
+    }
+    // checking status
+    var activeInterval;
+    function statusCheckingInterval(runStatus) {
+     if(runStatus) {
+       activeInterval = setInterval(() => {
+         let checkStatus = document.getElementById("status-input").value;
+       
+         if(checkStatus) {
+           document.getElementById("clear-btn").style.display = "block";
+         } else if(!checkStatus) {
+           document.getElementById("clear-btn").style.display = "none";
+         }
+       
+         if(checkStatus !== this.user.status) {
+           changed("status");
+         } else {
+           this.statusChanged = null;
+           document.getElementById("save-changes").style.display = "none";
+         }
+       },250)
+     } else {
+       clearInterval(activeInterval);
+     }
+    }
+  </script>
+</body>
+</html>

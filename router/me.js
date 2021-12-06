@@ -30,4 +30,13 @@ router.get("/friends", isLogin, async function(req, res) {
   });
 });
 
+// @GET
+router.get("/profile", isLogin, async function(req, res) {
+  res.render("me/profile", {
+    res,
+    req,
+    config
+  });
+});
+
 module.exports = router;

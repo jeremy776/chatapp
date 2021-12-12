@@ -81,7 +81,7 @@ io.use(sessionShare(ExpressSession, {
 
 io.on("connection", async function(socket) {
   // make user status to online
-  
+
   if (socket.handshake.session.passport || socket.handshake.auth.email) {
     let email;
     if(socket.handshake.session.passport) {
@@ -96,6 +96,7 @@ io.on("connection", async function(socket) {
     userDb.status = "online";
     await userDb.save();
     console.info(`${userDb.username} - Connected To Server`);
+    
   } else {
     console.warn("Unauthorized user try to connect, but i can handle it");
   }
@@ -119,14 +120,32 @@ io.on("connection", async function(socket) {
       return;
     }
   });
+  
+  // username change - with api
+  socket.on("api-username-change", (data) => {
+    console.log("trigger");
+    socket.emit("frontend-username-change", {
+      username: data.username
+    });
+  });
+  
   // username change
   socket.on("username-change",
     async (m) => {
+      let email;
+      if(socket.handshake.session.passport) {
+        email = socket.handshake.session.passport.user;
+      } else {
+        email = socket.handshake.auth.email;
+      }
       let user = await UserManager.findOne({
-        email: socket.handshake.session.passport.user
+        email
       });
       user.username = m.username;
       await user.save();
+      socket.emit("frontend-username-change", {
+        username: m.username
+      });
     });
   // status change
   socket.on("status-change",
@@ -141,6 +160,15 @@ io.on("connection", async function(socket) {
 
 // use routes
 app.use("/me", require("./router/me.js"));
+
+/*app.use(function (req, res, next) {
+  req.io = io;
+  next();
+});*/
+app.set("io", io);
+
+/* [PUBLIC - API] */
+app.use("/api/v1", require("./router/api/v1.js"));
 
 // Wihout routes
 app.get("/", function(req, res) {
@@ -325,7 +353,7 @@ app.post("/new-account", Protection, async function(req, res) {
   });
 });
 
-// get api from front end
+// [PRIVATE API] - User info
 app.get("/api/user", async function(req, res) {
   let user = await UserManager.findOne({
     token: req.headers.authorization
@@ -347,6 +375,18 @@ app.get("/api/user", async function(req, res) {
     username: user.username
   });
 });
+
+// login
+/* 
+  [ ======= ROADMAP ======= ]
+  -> [POST] user email & password
+  -> [SYSTEM] search email in database
+      -> if user exist then compare the password
+      -> check the password is correct or not
+      -> if correct system will get the user token from database
+      -> send the token as result from POST method
+  -> [WEB] receive the token and save the token to storage for request
+*/
 app.post("/api/login", async function(req, res) {
   let body = req.body;
   let user = await UserManager.findOne({

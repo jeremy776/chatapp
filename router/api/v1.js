@@ -8,7 +8,7 @@ router.get("/", async function(req, res) {
   res.send({status: 200, message: "Welcome mate!", version});
 });
 
-
+// edit limit
 const editNameLimit = rateLimit({
   windowMs: 60 * 1000,
   max: 2,
@@ -24,7 +24,6 @@ router.patch("/username", editNameLimit, async function(req, res) {
       message: "Cannot read property `authorization` expecting a string, but getting undefined"
     });
   }
-  
   let user = await ManagerAccount.findOne({
     token: token
   });
@@ -39,13 +38,10 @@ router.patch("/username", editNameLimit, async function(req, res) {
   user.username = body.username;
   user.save();
   
-  /*req.io.socket.emit("api-username-change", {
-    username: body.username
-  });*/
-  
   let socket = req.app.get("io").sockets;
   socket.emit("frontend-username-change", {
-    username: body.username
+    username: body.username,
+    id: user.id
   });
   
   return res.send({

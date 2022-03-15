@@ -82,43 +82,42 @@ io.use(sessionShare(ExpressSession, {
 io.on("connection", async function(socket) {
   // make user status to online
 
-  if (socket.handshake.session.passport || socket.handshake.auth.email) {
+  /*if (socket.handshake.session.passport || socket.handshake.auth.email) {
     let email;
     if(socket.handshake.session.passport) {
       email = socket.handshake.session.passport.user;
     } else {
       email = socket.handshake.auth.email;
-    }
+    }*/
+    
+    let token = socket.handshake.auth.token;
     let userDb = await UserManager.findOne({
-      email: email
+      token: token
     });
+    console.log(token);
     userDb.last_online = "online";
     userDb.status = "online";
     await userDb.save();
     console.info(`${userDb.username} - Connected To Server`);
-    
-  } else {
-    console.warn("Unauthorized user try to connect, but i can handle it");
-  }
+   
   socket.on("disconnect", async () => {
     // set user status to offline when disconnect
-    if (socket.handshake.session.passport || socket.handshake.auth.email) {
+    /*if (socket.handshake.session.passport || socket.handshake.auth.email) {
       let email;
       if(socket.handshake.session.passport) {
         email = socket.handshake.session.passport.user;
       } else {
         email = socket.handshake.auth.email;
-      }
+      }*/
+      let token = socket.handshake.auth.token;
       let user = await UserManager.findOne({
-        email: email
+        token: token
       });
       console.info(`${user.username} - Disconnected`);
       user.last_online = Date.now();
       user.status = "offline";
       await user.save();
-    } else {
-      return;
-    }
+    
   });
   
   // username change - with api
@@ -161,10 +160,6 @@ io.on("connection", async function(socket) {
 // use routes
 app.use("/me", require("./router/me.js"));
 
-/*app.use(function (req, res, next) {
-  req.io = io;
-  next();
-});*/
 app.set("io", io);
 
 /* [PUBLIC - API] */
